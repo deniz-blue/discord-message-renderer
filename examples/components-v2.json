@@ -2,12 +2,14 @@
 	"context": {
 		"roles": {
 			"5": {
+				"id": "5",
 				"name": "Testers",
-				"color": "#eb459f"
+				"color": 15418783
 			},
 			"9001": {
+				"id": "9001",
 				"name": "deniz",
-				"color": "#a97dff"
+				"color": 11107839
 			}
 		},
 		"now": "2026-11-10T10:30:00+02:00",

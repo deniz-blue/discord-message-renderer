@@ -1,0 +1,66 @@
+{
+	"context": {
+		"now": "2026-11-10T12:00:00+02:00",
+		"timeZone": "Europe/Vilnius"
+	},
+	"messages": [
+		{
+			"id": "1",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-10T11:40:00+02:00",
+			"content": "photos from saturday, and the rules",
+			"attachments": [
+				{ "id": "11", "filename": "table.png", "content_type": "image/png", "url": "https://cdn.discordapp.com/embed/avatars/2.png" },
+				{ "id": "12", "filename": "dice.png", "content_type": "image/png", "url": "https://cdn.discordapp.com/embed/avatars/3.png" },
+				{ "id": "13", "filename": "house-rules.pdf", "content_type": "application/pdf", "size": 1572864, "url": "https://example.com/house-rules.pdf" }
+			],
+			"reactions": [
+				{ "emoji": { "id": null, "name": "🎲" }, "count": 3, "me": true },
+				{ "emoji": { "id": null, "name": "✨" }, "count": 1, "me": false }
+			]
+		},
+		{
+			"id": "2",
+			"author": { "id": "1000000000000000002", "username": "kimmie", "global_name": "Kimmie" },
+			"timestamp": "2026-11-10T11:45:00+02:00",
+			"sticker_items": [{ "id": "781291131828699156", "name": "Wave", "format_type": 2 }]
+		},
+		{
+			"id": "3",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-10T11:50:00+02:00",
+			"poll": {
+				"question": { "text": "Which games next week?" },
+				"answers": [
+					{ "answer_id": 1, "poll_media": { "text": "Catan", "emoji": { "id": null, "name": "🐑" } } },
+					{ "answer_id": 2, "poll_media": { "text": "Codenames", "emoji": { "id": null, "name": "🕵️" } } },
+					{ "answer_id": 3, "poll_media": { "text": "Wingspan", "emoji": { "id": null, "name": "🐦" } } }
+				],
+				"expiry": "2026-11-11T11:50:00+02:00",
+				"allow_multiselect": true
+			}
+		},
+		{
+			"id": "4",
+			"author": { "id": "1000000000000000002", "username": "kimmie", "global_name": "Kimmie" },
+			"timestamp": "2026-11-10T11:55:00+02:00",
+			"poll": {
+				"question": { "text": "Saturday or Sunday?" },
+				"answers": [
+					{ "answer_id": 1, "poll_media": { "text": "Saturday" } },
+					{ "answer_id": 2, "poll_media": { "text": "Sunday" } }
+				],
+				"expiry": "2026-11-09T18:00:00+02:00",
+				"allow_multiselect": false,
+				"results": {
+					"is_finalized": true,
+					"answer_counts": [
+						{ "id": 1, "count": 5, "me_voted": false },
+						{ "id": 2, "count": 2, "me_voted": true }
+					]
+				}
+			},
+			"reactions": [{ "emoji": { "id": null, "name": "👍" }, "count": 4, "me": false }]
+		}
+	]
+}

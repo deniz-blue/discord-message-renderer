@@ -1,23 +1,39 @@
 {
 	"context": {
 		"users": {
-			"3": "Organizer",
-			"8": "Moderator"
+			"3": {
+				"id": "3",
+				"username": "organizer",
+				"global_name": "Organizer"
+			},
+			"8": {
+				"id": "8",
+				"username": "moderator",
+				"global_name": "Moderator"
+			}
 		},
 		"channels": {
-			"2": "events",
-			"9": "Board games at Vingis"
+			"2": {
+				"id": "2",
+				"name": "events"
+			},
+			"9": {
+				"id": "9",
+				"name": "Board games at Vingis"
+			}
 		},
 		"now": "2026-11-10T09:50:00+02:00",
 		"timeZone": "Europe/Vilnius",
 		"roles": {
 			"9000": {
+				"id": "9000",
 				"name": "Organizer",
-				"color": "#e67e22"
+				"color": 15105570
 			},
 			"9001": {
+				"id": "9001",
 				"name": "Moderator",
-				"color": "#3ba55c"
+				"color": 3908956
 			}
 		}
 	},

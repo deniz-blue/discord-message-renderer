@@ -1,15 +1,43 @@
 # discord-message-renderer
 
-Draws Discord message JSON the way Discord shows it, as HTML or a PNG.
+Renders Discord messages from API JSON as a PNG, HTML or an embed: https://discord-message-renderer.tsx.lt
 
-The input is a list of Discord message objects, the shape the API returns, plus the context Discord would know:
+## CLI
+
+```sh
+node src/cli.ts input.json -o out.png [--html out.html] [--width 600] [--scale 2]
+    [--theme dark|ash|onyx|light] [--platform desktop|mobile] [--font "Google font"] [--fonts dir]
+```
+
+- Needs Node 26
+- `--fonts`: a folder of font files, e.g. gg sans (not included)
+
+## Embedding
+
+- Copy embed code on the site gives an iframe snippet
+- Or post messages to the iframe:
+
+```js
+frame.contentWindow.postMessage({
+	type: "discord-message-renderer:render",
+	input: { messages: [/* … */] },
+	options: { theme: "ash", platform: "mobile" },
+}, "*");
+```
+
+- Events posted back:
+  - `discord-message-renderer:ready`
+  - `discord-message-renderer:height` with `height`
+  - `discord-message-renderer:error` with `message`
+
+## Input format
 
 ```json
 {
 	"context": {
-		"users": { "3": "Organizer" },
-		"roles": { "5": { "name": "Testers", "color": "#eb459f", "position": 2 } },
-		"channels": { "2": "events" },
+		"users": { "3": { "id": "3", "username": "organizer", "global_name": "Organizer" } },
+		"roles": { "5": { "id": "5", "name": "Testers", "color": 15418783, "position": 2 } },
+		"channels": { "2": { "id": "2", "name": "events" } },
 		"now": "2026-11-10T09:50:00+02:00",
 		"timeZone": "Europe/Vilnius",
 		"locale": "en-US"
@@ -25,69 +53,62 @@ The input is a list of Discord message objects, the shape the API returns, plus 
 }
 ```
 
-Only what is drawn is read, and every field may be left out. The name is `member.nick`, then `author.global_name`,
-then `author.username`; its colour comes from the highest role in `member.roles` that has one in `context.roles`.
-`bot` or `webhook_id` adds the APP tag, `edited_timestamp` adds "(edited)", and `message_reference` makes a reply to
-`referenced_message` or an earlier message with that `id`. `avatar` is a hash as in the API, or any image URL. Users
-named in `mentions` and as authors need no entry in `context.users`; a mention nobody names shows its id. Messages
-from the same author within seven minutes are grouped. A single message without `messages` around it works too, and
-one without an author is drawn as an app called Bot.
+The top level is `{ context, messages }`, or a single message object. Every field is optional.
 
-## Use
+### `messages`
 
-```sh
-pnpm dev
-```
+Discord message objects, as the API returns them:
 
-The page: JSON on the left, the preview on the right. Theme, platform and width are picked there, as they are flags for
-the command, not part of the JSON. Copy PNG and Download PNG draw the picture in the browser with modern-screenshot. The
-JSON is kept in localStorage. `pnpm build` writes a static site to `dist/`, which `wrangler deploy` serves at
-https://discord-message-renderer.tsx.lt.
+- `id`: lets a later message reply to this one
+- `author`: `id`, `username`, `global_name`, `avatar` (a hash or an image URL), `bot`. Without one, the author is an app
+  called Bot
+- `member`: `nick`, and `roles` as ids. The name takes the colour of the highest role in `context.roles` that has one.
+  Without it, `context.members` is looked up by author id
+- `webhook_id`: adds the APP tag, as `author.bot` does
+- `timestamp`: defaults to `context.now`. The same author within 7 minutes is grouped
+- `edited_timestamp`: adds "(edited)"
+- `message_reference` + `referenced_message`, or a `message_id` of an earlier message: drawn as a reply. Forwards are
+  ignored
+- `mentions`: these users, and their `member`, need no entry in `context`
+- `content`: markdown, see below
+- `embeds`: `author` (`name`, `icon_url`), `title`, `url`, `description`, `fields` (`name`, `value`, `inline`),
+  `image.url`, `thumbnail.url`, `footer` (`text`, `icon_url`), `timestamp`, `color`
+- `components`:
+  - action row, button (`style`, `label`, `emoji`, `disabled`)
+  - string, user, role, mentionable and channel selects (`placeholder`, `disabled`, and `default` options of a string
+    select)
+  - container (`accent_color`), section (`accessory`), text display, thumbnail (`media.url`, `description`)
+  - media gallery (up to 10 `items`: `media.url`, `description`, `spoiler`), file (`file.url`), separator (`spacing`,
+    `divider`)
+- `attachments`: images (by `content_type` or extension) share one mosaic; other files get a card with `filename` and
+  `size`. A `SPOILER_` name blurs the image
+- `sticker_items`: `id`, `name`, `format_type`. PNG, APNG and GIF are drawn; Lottie shows its name
+- `poll`: `question.text`, `answers` (`answer_id`, `poll_media.text`, `poll_media.emoji`), `expiry`, `allow_multiselect`,
+  `results` (`is_finalized`, `answer_counts`: `id`, `count`, `me_voted`). Shares show once it is finalized, expired, or
+  voted on
+- `reactions`: `emoji`, `count`, `me`
 
-## Embed
+### `context`
 
-Copy embed code on the page puts an `<iframe>` and a few lines of script on the clipboard. The iframe opens
-`embed.html`, which draws only the messages: the JSON travels compressed after `#`, which the browser never sends to the
-server, so any static host works; theme and platform go in the query. The script sets the iframe's height from the
-height the embed reports. Without it the iframe keeps the height it had when copied.
+Partial API objects keyed by id, as in an interaction's `resolved`:
 
-A site that makes its own messages can send them instead:
+- `users`: `global_name`, then `username`
+- `members`: `nick`, `roles`
+- `roles`: `name`, `colors.primary_color` or `color` (0 means none), `position`
+- `channels`: `name`
+- `now`: ISO time for "Today at" and relative timestamps. Defaults to the current time
+- `timeZone`: IANA name, defaults to `UTC`
+- `locale`: defaults to `en-US`
 
-```js
-frame.contentWindow.postMessage({
-	type: "discord-message-renderer:render",
-	input: { messages: [/* … */] },
-	options: { theme: "ash", platform: "mobile" },
-}, "*");
-```
+A user mention shows the member's `nick`, then the user's name, then its id.
 
-`input` takes anything the page does, and `options` override the query. The embed posts `discord-message-renderer:ready`
-when it can take messages, `discord-message-renderer:height` with `height` after every change in size, and
-`discord-message-renderer:error` with `message` when the input can't be drawn. It only listens to the page that embeds
-it.
+### Markdown
 
-## Command
+In `content`, text displays, and embed titles, descriptions and fields:
 
-```sh
-node src/cli.ts examples/protocal-review.json -o out.png [--html out.html] [--width 600] [--scale 2]
-    [--theme dark|ash|onyx|light] [--platform desktop|mobile] [--font "Google font"] [--fonts dir]
-```
-
-Needs Node 26. The PNG is drawn by Takumi, which lays out the same HTML and CSS without a browser. Takumi reads no
-system fonts: `--fonts` hands it every font file in a folder, such as gg sans and gg mono (Discord's, not included), and
-Discord's own fallbacks, Noto Sans and Source Code Pro, come from Google Fonts. The HTML and the page use gg sans
-wherever it is installed. Emoji are Twemoji, loaded from the web. Code blocks are highlighted with highlight.js, as
-Discord does. `--theme` picks Dark (default), Ash, Onyx or Light; `src/core/themes.css` holds the colours, taken from
-Discord's web client on 2026-11-10. `--platform` picks `desktop` (default) or `mobile`. Desktop follows Discord's web
-CSS; the Android app has no CSS, so mobile was measured from phone screenshots (smaller text in containers, no "Today
-at" in the header, stacked embed fields, a right-pointing chevron on selects).
-
-`renderMessagesHtml(input, options)` in `src/core/render.ts` returns the HTML and `src/core/style.css` styles it. The
-core does no I/O, so it runs in a browser or a Worker as well.
-
-## Layout
-
-- `src/core`: the markdown parser, HTML for messages, embeds and components, and the stylesheet
-- `src/io`: files, and the PNG through Takumi
-- `src/cli.ts`: the command
-- `web`: the page and the embed (Vite)
+- `**bold**`, `*italic*`, `_italic_`, `__underline__`, `~~strike~~`, `||spoiler||`, `` `code` ``
+- code blocks (highlighted), `>` and `>>>` quotes, `#` `##` `###` headings, `-#` subtext, `-` `*` `1.` lists
+- links: bare, `<url>`, `[text](url)`
+- `<@id>`, `<@&id>`, `<#id>`, `@everyone`, `@here`, `</command:id>`
+- `<t:seconds:style>` timestamps
+- Unicode emoji (as Twemoji), `<:name:id>` and `<a:name:id>`

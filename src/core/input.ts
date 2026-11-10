@@ -1,27 +1,66 @@
-import type { APIMessage, APIUser } from "discord-api-types/v10";
-import { displayNameOf } from "./author.ts";
+import type {
+	APIAttachment,
+	APIChannel,
+	APIGuildMember,
+	APIMessage,
+	APIPoll,
+	APIPollAnswer,
+	APIPollAnswerCount,
+	APIPollMedia,
+	APIReaction,
+	APIRole,
+	APIStickerItem,
+	APIUser,
+} from "discord-api-types/v10";
+import type { EmojiInput } from "./emoji.ts";
+import type { Platform } from "./options.ts";
 import type { Clock } from "./timestamp.ts";
 
-export type UserInput = Partial<Pick<APIUser, "id" | "username" | "global_name" | "avatar" | "bot">>;
+export type UserInput = Partial<APIUser>;
 
-export type MemberInput = { nick?: string | null; roles?: string[] };
+export type MemberInput = Partial<Omit<APIGuildMember, "user">>;
 
-export type MessageInput = Partial<Omit<APIMessage, "author" | "mentions" | "referenced_message">> & {
+export type RoleInput = Partial<APIRole>;
+
+export type ChannelInput = Partial<Pick<APIChannel, "id" | "name" | "type">>;
+
+export type MentionedUserInput = UserInput & { member?: MemberInput };
+
+export type AttachmentInput = Partial<APIAttachment>;
+
+export type ReactionInput = Partial<Omit<APIReaction, "emoji">> & { emoji?: EmojiInput };
+
+export type StickerInput = Partial<APIStickerItem>;
+
+export type PollAnswerInput = Partial<Omit<APIPollAnswer, "poll_media">> & { poll_media?: Partial<APIPollMedia> };
+
+export type PollInput = Partial<Omit<APIPoll, "question" | "answers" | "results">> & {
+	question?: Partial<APIPollMedia>;
+	answers?: PollAnswerInput[];
+	results?: { is_finalized?: boolean; answer_counts?: Partial<APIPollAnswerCount>[] };
+};
+
+type InputFields = "author" | "mentions" | "referenced_message" | "attachments" | "reactions" | "sticker_items" | "poll";
+
+export type MessageInput = Partial<Omit<APIMessage, InputFields>> & {
 	author?: UserInput;
 	member?: MemberInput;
-	mentions?: UserInput[];
+	mentions?: MentionedUserInput[];
 	referenced_message?: MessageInput | null;
+	attachments?: AttachmentInput[];
+	reactions?: ReactionInput[];
+	sticker_items?: StickerInput[];
+	poll?: PollInput;
 };
 
-export type RoleInput = { name: string; color?: string | number; position?: number };
-
-export type MentionNames = {
-	users?: Record<string, string>;
+export type ResolvedEntities = {
+	users?: Record<string, UserInput>;
+	members?: Record<string, MemberInput>;
 	roles?: Record<string, RoleInput>;
-	channels?: Record<string, string>;
+	channels?: Record<string, ChannelInput>;
 };
 
-export type RenderContext = MentionNames & {
+export type RenderContext = ResolvedEntities & {
 	now?: string;
 	timeZone?: string;
 	locale?: string;
@@ -32,33 +71,37 @@ export type RenderInput = {
 	messages: MessageInput[];
 };
 
-export type Theme = "dark" | "ash" | "onyx" | "light";
+export type RenderSettings = Clock & { resolved: ResolvedEntities; platform: Platform };
 
-export type Platform = "desktop" | "mobile";
-
-export type RenderOptions = {
-	theme?: Theme;
-	platform?: Platform;
-	font?: string;
-};
-
-export type RenderSettings = Clock & { names: MentionNames; platform: Platform };
-
-const usersNamedIn = (messages: readonly MessageInput[]): Record<string, string> =>
+const usersIn = (messages: readonly MessageInput[]): Record<string, UserInput> =>
 	Object.fromEntries(
 		messages
 			.flatMap((message) => [message.author, ...(message.mentions ?? [])])
-			.flatMap((user) => (user?.id === undefined ? [] : [[user.id, displayNameOf(user)]])),
+			.flatMap((user) => (user?.id === undefined ? [] : [[user.id, user]])),
 	);
 
-export const settingsOf = (input: RenderInput, options: RenderOptions): RenderSettings => {
-	const context = input.context ?? {};
+const membersIn = (messages: readonly MessageInput[]): Record<string, MemberInput> =>
+	Object.fromEntries(
+		messages
+			.flatMap((message) => [
+				[message.author?.id, message.member] as const,
+				...(message.mentions ?? []).map((user) => [user.id, user.member] as const),
+			])
+			.flatMap(([id, member]) => (id === undefined || member === undefined ? [] : [[id, member]])),
+	);
+
+export const settingsOf = (input: RenderInput, platform: Platform): RenderSettings => {
+	const { now, timeZone, locale, ...resolved } = input.context ?? {};
 	return {
-		names: { ...context, users: { ...usersNamedIn(input.messages), ...context.users } },
-		platform: options.platform ?? "desktop",
-		locale: context.locale ?? "en-US",
-		timeZone: context.timeZone ?? "UTC",
-		now: context.now === undefined ? new Date() : new Date(context.now),
+		resolved: {
+			...resolved,
+			users: { ...usersIn(input.messages), ...resolved.users },
+			members: { ...membersIn(input.messages), ...resolved.members },
+		},
+		platform,
+		locale: locale ?? "en-US",
+		timeZone: timeZone ?? "UTC",
+		now: now === undefined ? new Date() : new Date(now),
 	};
 };
 

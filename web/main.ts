@@ -1,20 +1,12 @@
 import { domToBlob, domToPng } from "modern-screenshot";
-import "../src/core/style.css";
-import "../src/core/themes.css";
+import { errorMessageOf } from "../src/core/errors.ts";
 import { type RenderInput, renderInputOf } from "../src/core/input.ts";
-import {
-	type RenderOptions,
-	fontOf,
-	fontStylesheetUrl,
-	matchingOption,
-	platforms,
-	renderMessagesHtml,
-	themes,
-} from "../src/core/render.ts";
+import { type RenderOptions, platforms, renderOptionsOf, themes } from "../src/core/options.ts";
 import { elementById } from "./elements.ts";
 import { embedCodeOf } from "./embed-protocol.ts";
 import { textToFragment } from "./fragment.ts";
 import "./page.css";
+import { showMessages } from "./show-messages.ts";
 
 const examples = import.meta.glob<unknown>("../examples/*.json", { eager: true, import: "default" });
 const widths = ["440", "600", "800"];
@@ -45,14 +37,13 @@ const parseEditor = (text: string): ParsedEditor => {
 	try {
 		return { input: renderInputOf(JSON.parse(text)) };
 	} catch (error) {
-		return { error: error instanceof Error ? error.message : String(error) };
+		return { error: errorMessageOf(error) };
 	}
 };
 
-const selectedOptions = (): RenderOptions => ({
-	theme: matchingOption(themes, themeSelect.value) ?? "dark",
-	platform: matchingOption(platforms, platformSelect.value) ?? "desktop",
-});
+const optionSelects: Partial<Record<keyof RenderOptions, HTMLSelectElement>> = { theme: themeSelect, platform: platformSelect };
+
+const selectedOptions = (): RenderOptions => renderOptionsOf((name) => optionSelects[name]?.value);
 
 const renderPreview = (): void => {
 	localStorage.setItem(editorStorageKey, editor.value);
@@ -60,10 +51,8 @@ const renderPreview = (): void => {
 	status.textContent = parsed.error ?? "";
 	embedButton.disabled = copyButton.disabled = downloadButton.disabled = parsed.input === undefined;
 	if (parsed.input === undefined) return;
-	const options = selectedOptions();
-	fontLink.href = fontStylesheetUrl(fontOf(options));
 	preview.style.width = `${widthSelect.value}px`;
-	preview.innerHTML = renderMessagesHtml(parsed.input, options);
+	showMessages(preview, fontLink, parsed.input, selectedOptions());
 };
 
 const messagesElement = (): HTMLElement => {
@@ -107,7 +96,7 @@ const loadExample = (path: string): void => {
 
 const reportFailure = (button: HTMLButtonElement, action: () => Promise<void>) => (): void => {
 	const label = button.textContent;
-	action().catch((error: unknown) => (status.textContent = `${label} failed: ${error instanceof Error ? error.message : String(error)}`));
+	action().catch((error: unknown) => (status.textContent = `${label} failed: ${errorMessageOf(error)}`));
 };
 
 const examplePaths = Object.keys(examples);

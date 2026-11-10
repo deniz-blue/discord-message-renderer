@@ -49,6 +49,19 @@
 	--text-code-deletion: #ff9691;
 	--background-code-addition: #0084421f;
 	--background-code-deletion: #d6293a1f;
+	--reaction-background-default: #94949c1f;
+	--reaction-text-default: #abacb2;
+	--reaction-background-reacted-default: #5864f23d;
+	--reaction-border-reacted-default: #5865f2;
+	--reaction-text-reacted-default: #b9c8ff;
+	--background-mod-muted: #99999914;
+	--interactive-background-active: #9595a229;
+	--polls-victor-fill: #23a55a33;
+	--polls-voted-fill: #5a64f033;
+	--status-positive: #23a55a;
+	--control-brand-foreground: #949cf7;
+	--border-strong: #96969f70;
+	--background-base-lowest: #121214;
 }
 
 .theme-ash {
@@ -100,6 +113,19 @@
 	--text-code-deletion: #ffbdb9;
 	--background-code-addition: #0084421f;
 	--background-code-deletion: #d6293a1f;
+	--reaction-background-default: #94949c1f;
+	--reaction-text-default: #c5c6ca;
+	--reaction-background-reacted-default: #5864f23d;
+	--reaction-border-reacted-default: #5865f2;
+	--reaction-text-reacted-default: #dfe4ff;
+	--background-mod-muted: #99999914;
+	--interactive-background-active: #9595a229;
+	--polls-victor-fill: #23a55a33;
+	--polls-voted-fill: #5a64f033;
+	--status-positive: #23a55a;
+	--control-brand-foreground: #949cf7;
+	--border-strong: #96969f70;
+	--background-base-lowest: #2c2d32;
 }
 
 .theme-onyx {
@@ -151,6 +177,19 @@
 	--text-code-deletion: #f67774;
 	--background-code-addition: #0084421f;
 	--background-code-deletion: #d6293a1f;
+	--reaction-background-default: #94949c1f;
+	--reaction-text-default: #96979e;
+	--reaction-background-reacted-default: #5864f23d;
+	--reaction-border-reacted-default: #5865f2;
+	--reaction-text-reacted-default: #9aadff;
+	--background-mod-muted: #99999914;
+	--interactive-background-active: #9696a033;
+	--polls-victor-fill: #23a55a33;
+	--polls-voted-fill: #5a64f033;
+	--status-positive: #23a55a;
+	--control-brand-foreground: #949cf7;
+	--border-strong: #96969f70;
+	--background-base-lowest: #000000;
 }
 
 .theme-light {
@@ -202,4 +241,17 @@
 	--text-code-deletion: #9e1f2a;
 	--background-code-addition: #0084421f;
 	--background-code-deletion: #d6293a1f;
+	--reaction-background-default: #94949c1f;
+	--reaction-text-default: #595a63;
+	--reaction-background-reacted-default: #5864f23d;
+	--reaction-border-reacted-default: #5865f2;
+	--reaction-text-reacted-default: #273478;
+	--background-mod-muted: #99999914;
+	--interactive-background-active: #9595a229;
+	--polls-victor-fill: #23915033;
+	--polls-voted-fill: #5a64f033;
+	--status-positive: #24934e;
+	--control-brand-foreground: #5865f2;
+	--border-strong: #97979f85;
+	--background-base-lowest: #f3f3f4;
 }

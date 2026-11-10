@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { type RenderInput, renderInputOf } from "../core/input.ts";
-import { fontStylesheetUrl } from "../core/render.ts";
+import { fontStylesheetUrl } from "../core/options.ts";
 
 const stylePaths = ["../core/style.css", "../core/themes.css"].map((path) => new URL(path, import.meta.url));
 

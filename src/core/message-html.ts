@@ -1,4 +1,5 @@
 import { ComponentType, type APIMessageComponent } from "discord-api-types/v10";
+import { attachmentsToHtml } from "./attachments-html.ts";
 import { componentToHtml } from "./components-html.ts";
 import { embedToHtml } from "./embed-html.ts";
 import { type Author, authorOf } from "./author.ts";
@@ -6,6 +7,9 @@ import { type Html, html } from "./html.ts";
 import type { MessageInput, RenderSettings } from "./input.ts";
 import { inlinesToHtml, markdownToHtml } from "./markdown-html.ts";
 import { parseInlineMarkdown } from "./markdown-inline.ts";
+import { pollToHtml } from "./poll-html.ts";
+import { reactionsToHtml } from "./reactions-html.ts";
+import { stickersToHtml } from "./stickers-html.ts";
 import { formatMessageHeaderTime } from "./timestamp.ts";
 
 export type MessageNeighbours = {
@@ -22,7 +26,7 @@ const timeOf = (message: MessageInput, settings: RenderSettings): Date =>
 const continuesPrevious = (message: MessageInput, neighbours: MessageNeighbours, settings: RenderSettings): boolean =>
 	neighbours.previous !== undefined &&
 	neighbours.replied === undefined &&
-	authorOf(message, settings.names).key === authorOf(neighbours.previous, settings.names).key &&
+	authorOf(message, settings.resolved).key === authorOf(neighbours.previous, settings.resolved).key &&
 	timeOf(message, settings).getTime() - timeOf(neighbours.previous, settings).getTime() < groupWindowMs;
 
 const nameToHtml = (author: Author): Html =>
@@ -42,25 +46,25 @@ const previewLineOf = (message: MessageInput): string => {
 };
 
 const replyToHtml = (replied: MessageInput, settings: RenderSettings): Html => {
-	const author = authorOf(replied, settings.names);
+	const author = authorOf(replied, settings.resolved);
 	return html`<div class="reply"><img class="reply-avatar" src="${author.avatarUrl}" alt="">${nameToHtml(author)}<span class="reply-text">${inlinesToHtml(parseInlineMarkdown(previewLineOf(replied)), settings)}</span></div>`;
 };
 
+const listToHtml = <T>(items: readonly T[] | undefined, toHtml: (items: readonly T[]) => Html): Html | false =>
+	items === undefined || items.length === 0 ? false : toHtml(items);
+
 const bodyToHtml = (message: MessageInput, settings: RenderSettings): Html => {
-	const { content, embeds, components } = message;
+	const { content, embeds, components, attachments, sticker_items: stickers, poll, reactions } = message;
 	const edited = (message.edited_timestamp ?? undefined) === undefined ? undefined : html`<span class="edited">(edited)</span>`;
 	const hasContent = content !== undefined && content !== "";
-	const componentsHtml = components === undefined || components.length === 0
-		? false
-		: html`<div class="components">${components.map((component) => componentToHtml(component, settings))}</div>`;
-	return html`${hasContent ? markdownToHtml(content, settings, edited) : edited}${(embeds ?? []).map((embed) => embedToHtml(embed, settings))}${componentsHtml}`;
+	return html`${hasContent ? markdownToHtml(content, settings, edited) : edited}${listToHtml(attachments, attachmentsToHtml)}${(embeds ?? []).map((embed) => embedToHtml(embed, settings))}${poll === undefined ? false : pollToHtml(poll, settings)}${listToHtml(components, (parts) => html`<div class="components">${parts.map((component) => componentToHtml(component, settings))}</div>`)}${listToHtml(stickers, stickersToHtml)}${listToHtml(reactions, reactionsToHtml)}`;
 };
 
 export const messageToHtml = (message: MessageInput, neighbours: MessageNeighbours, settings: RenderSettings): Html => {
 	if (continuesPrevious(message, neighbours, settings)) {
 		return html`<div class="message grouped">${bodyToHtml(message, settings)}</div>`;
 	}
-	const author = authorOf(message, settings.names);
+	const author = authorOf(message, settings.resolved);
 	return html`<div class="message">
 		${neighbours.replied !== undefined ? replyToHtml(neighbours.replied, settings) : false}
 		<img class="avatar" src="${author.avatarUrl}" alt="">

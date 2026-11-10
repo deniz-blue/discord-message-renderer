@@ -1,7 +1,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { render } from "takumi-js";
-import { fontStylesheetUrl } from "../core/render.ts";
+import { fontStylesheetUrl } from "../core/options.ts";
 import { readStylesheet } from "./files.ts";
 
 export type PngOptions = { width: number; scale: number; path: string; font: string; fontDirectory?: string };

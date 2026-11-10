@@ -1,4 +1,4 @@
-import type { Platform } from "./input.ts";
+import type { Platform } from "./options.ts";
 
 export type TimestampStyle = "t" | "T" | "d" | "D" | "f" | "F" | "R";
 

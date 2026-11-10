@@ -1,6 +1,8 @@
 import { writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
-import { type RenderOptions, fontOf, matchingOption, platforms, renderMessagesHtml, themes } from "./core/render.ts";
+import { type RenderOptions, fontOf, platforms, renderOptionsOf, themes } from "./core/options.ts";
+import { errorMessageOf } from "./core/errors.ts";
+import { renderMessagesHtml } from "./core/render.ts";
 import { messagesDocument, readRenderInput } from "./io/files.ts";
 import { writeMessagesPng } from "./io/png.ts";
 
@@ -14,8 +16,8 @@ const { values, positionals } = parseArgs({
 		html: { type: "string" },
 		width: { type: "string", default: "600" },
 		scale: { type: "string", default: "2" },
-		theme: { type: "string", default: "dark" },
-		platform: { type: "string", default: "desktop" },
+		theme: { type: "string" },
+		platform: { type: "string" },
 		font: { type: "string" },
 		fonts: { type: "string" },
 	},
@@ -29,11 +31,15 @@ const fail: (message: string) => never = (message) => {
 const [inputPath] = positionals;
 if (inputPath === undefined) fail("no input file");
 
-const options: RenderOptions = {
-	theme: matchingOption(themes, values.theme) ?? fail(`unknown theme ${values.theme}`),
-	platform: matchingOption(platforms, values.platform) ?? fail(`unknown platform ${values.platform}`),
-	...(values.font === undefined ? {} : { font: values.font }),
+const readOptions = (): RenderOptions => {
+	try {
+		return renderOptionsOf((name) => values[name]);
+	} catch (error) {
+		return fail(errorMessageOf(error));
+	}
 };
+
+const options = readOptions();
 
 const input = await readRenderInput(inputPath);
 const messagesHtml = renderMessagesHtml(input, options);

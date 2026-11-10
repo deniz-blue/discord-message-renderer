@@ -1,37 +1,8 @@
 import { MessageReferenceType } from "discord-api-types/v10";
 import { html } from "./html.ts";
-import { type MessageInput, type Platform, type RenderInput, type RenderOptions, type Theme, settingsOf } from "./input.ts";
+import { type MessageInput, type RenderInput, settingsOf } from "./input.ts";
 import { messageToHtml } from "./message-html.ts";
-
-export type {
-	MentionNames,
-	MemberInput,
-	MessageInput,
-	Platform,
-	RenderContext,
-	RenderInput,
-	RenderOptions,
-	RoleInput,
-	Theme,
-	UserInput,
-} from "./input.ts";
-
-export const defaultFont = "Noto Sans";
-
-export const themes: readonly Theme[] = ["dark", "ash", "onyx", "light"];
-
-export const platforms: readonly Platform[] = ["desktop", "mobile"];
-
-export const matchingOption = <T extends string>(options: readonly T[], name: string | undefined): T | undefined =>
-	options.find((option) => option === name);
-
-export const fontOf = (options: RenderOptions): string =>
-	options.font !== undefined && /^[\w ]+$/.test(options.font) ? options.font : defaultFont;
-
-const googleFontQuery = (family: string): string => `family=${family.replaceAll(" ", "+")}:wght@400;500;600;700`;
-
-export const fontStylesheetUrl = (family: string): string =>
-	`https://fonts.googleapis.com/css2?${[...new Set([family, defaultFont, "Source Code Pro"])].map(googleFontQuery).join("&")}&display=swap`;
+import { type RenderOptions, fontOf } from "./options.ts";
 
 const repliedMessageOf = (message: MessageInput, earlier: readonly MessageInput[]): MessageInput | undefined => {
 	const reference = message.message_reference;
@@ -40,8 +11,7 @@ const repliedMessageOf = (message: MessageInput, earlier: readonly MessageInput[
 };
 
 export const renderMessagesHtml = (input: RenderInput, options: RenderOptions): string => {
-	const settings = settingsOf(input, options);
-	const theme = matchingOption(themes, options.theme) ?? "dark";
+	const settings = settingsOf(input, options.platform ?? "desktop");
 	const messages = input.messages.map((message, index) =>
 		messageToHtml(
 			message,
@@ -52,5 +22,5 @@ export const renderMessagesHtml = (input: RenderInput, options: RenderOptions): 
 			settings,
 		),
 	);
-	return html`<div class="messages theme-${theme} platform-${settings.platform}" style="--font:'${fontOf(options)}'">${messages}</div>`.html;
+	return html`<div class="messages theme-${options.theme ?? "dark"} platform-${settings.platform}" style="--font:'${fontOf(options)}'">${messages}</div>`.html;
 };

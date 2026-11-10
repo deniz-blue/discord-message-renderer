@@ -1,5 +1,6 @@
-import { safeColor, safeUrl } from "./html.ts";
-import type { MentionNames, MessageInput, UserInput } from "./input.ts";
+import { displayNameOf, roleColorOf } from "./entities.ts";
+import { safeUrl } from "./html.ts";
+import type { MessageInput, ResolvedEntities, UserInput } from "./input.ts";
 
 export type Author = {
 	key: string;
@@ -11,8 +12,6 @@ export type Author = {
 
 const cdn = "https://cdn.discordapp.com";
 const bot: UserInput = { username: "Bot", bot: true };
-
-export const displayNameOf = (user: UserInput): string => user.global_name ?? user.username ?? "Unknown";
 
 // Discord: users on unique usernames get default avatar (id >> 22) % 6.
 const defaultAvatarIndexOf = (user: UserInput): number =>
@@ -31,24 +30,25 @@ const avatarUrlOf = (user: UserInput): string => {
 
 type ColoredRole = { color: string; position: number };
 
-// Discord colours a name with the highest-positioned role that has a colour; colour 0 means none.
-const roleColorOf = (roleIds: readonly string[], names: MentionNames): string | undefined =>
+// Discord colours a name with the highest-positioned role that has a colour.
+const nameColorOf = (roleIds: readonly string[], resolved: ResolvedEntities): string | undefined =>
 	roleIds
 		.flatMap((id): ColoredRole[] => {
-			const role = names.roles?.[id];
-			const color = role === undefined || role.color === 0 ? undefined : safeColor(role.color);
-			return role === undefined || color === undefined ? [] : [{ color, position: role.position ?? 0 }];
+			const role = resolved.roles?.[id];
+			const color = roleColorOf(role);
+			return color === undefined ? [] : [{ color, position: role?.position ?? 0 }];
 		})
 		.reduce<ColoredRole | undefined>((best, role) => (best === undefined || role.position > best.position ? role : best), undefined)
 		?.color;
 
-export const authorOf = (message: MessageInput, names: MentionNames): Author => {
+export const authorOf = (message: MessageInput, resolved: ResolvedEntities): Author => {
 	const user = message.author ?? bot;
+	const member = message.member ?? (user.id === undefined ? undefined : resolved.members?.[user.id]);
 	return {
 		key: user.id ?? displayNameOf(user),
-		name: message.member?.nick ?? displayNameOf(user),
+		name: member?.nick ?? displayNameOf(user),
 		avatarUrl: avatarUrlOf(user),
-		color: roleColorOf(message.member?.roles ?? [], names),
+		color: nameColorOf(member?.roles ?? [], resolved),
 		app: user.bot === true || message.webhook_id !== undefined,
 	};
 };

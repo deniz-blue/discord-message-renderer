@@ -1,5 +1,5 @@
 import { html } from "../src/core/html.ts";
-import type { RenderOptions } from "../src/core/render.ts";
+import type { RenderOptions } from "../src/core/options.ts";
 
 export const renderRequestType = "discord-message-renderer:render";
 

@@ -1,7 +1,8 @@
 import { highlightCode } from "./highlight.ts";
 import { formatDiscordTimestamp } from "./timestamp.ts";
-import { customEmojiUrl, twemojiUrl } from "./emoji.ts";
-import { type Html, html, safeColor, safeUrl } from "./html.ts";
+import { emojiToHtml } from "./emoji.ts";
+import { roleColorOf, userNameOf } from "./entities.ts";
+import { type Html, html, safeUrl } from "./html.ts";
 import type { RenderSettings } from "./input.ts";
 import { type Block, type ListMarker, parseMarkdownBlocks } from "./markdown-blocks.ts";
 import type { Inline, TextFormat } from "./markdown-inline.ts";
@@ -24,13 +25,13 @@ const nameOrRaw = (name: string | undefined, prefix: string, unresolved: string)
 	name === undefined ? unresolved : `${prefix}${name}`;
 
 const channelMention = (id: string, settings: RenderSettings): Html => {
-	const name = settings.names.channels?.[id];
+	const name = settings.resolved.channels?.[id]?.name ?? undefined;
 	return name === undefined ? html`<span class="mention unknown">#unknown</span>` : mention(`#${name}`);
 };
 
 const roleMention = (id: string, settings: RenderSettings): Html => {
-	const role = settings.names.roles?.[id];
-	return mention(nameOrRaw(role?.name, "@", "@deleted-role"), safeColor(role?.color));
+	const role = settings.resolved.roles?.[id];
+	return mention(nameOrRaw(role?.name, "@", "@deleted-role"), roleColorOf(role));
 };
 
 const inlineToHtml = (node: Inline, settings: RenderSettings): Html => {
@@ -39,7 +40,7 @@ const inlineToHtml = (node: Inline, settings: RenderSettings): Html => {
 		case "format": return formatTags[node.format](inlinesToHtml(node.children, settings));
 		case "code": return html`<code class="inline-code">${node.text}</code>`;
 		case "link": return html`<a class="link" href="${safeUrl(node.url)}">${inlinesToHtml(node.children, settings)}</a>`;
-		case "user": return mention(nameOrRaw(settings.names.users?.[node.id], "@", `<@${node.id}>`));
+		case "user": return mention(nameOrRaw(userNameOf(node.id, settings.resolved), "@", `<@${node.id}>`));
 		case "channel": return channelMention(node.id, settings);
 		case "role": return roleMention(node.id, settings);
 		case "everyone": return mention(node.text);
@@ -48,8 +49,8 @@ const inlineToHtml = (node: Inline, settings: RenderSettings): Html => {
 			const text = formatDiscordTimestamp(new Date(node.seconds * 1000), node.style, settings);
 			return html`<span class="timestamp">${text}</span>`;
 		}
-		case "customEmoji": return html`<img class="emoji" src="${customEmojiUrl(node.id, node.animated)}" alt=":${node.name}:">`;
-		case "emoji": return html`<img class="emoji" src="${twemojiUrl(node.text)}" alt="${node.text}">`;
+		case "customEmoji": return emojiToHtml(node);
+		case "emoji": return emojiToHtml({ name: node.text });
 	}
 };
 
