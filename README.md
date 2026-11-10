@@ -41,7 +41,8 @@ pnpm dev
 
 The page: JSON on the left, the preview on the right. Theme, platform and width are picked there, as they are flags for
 the command, not part of the JSON. Copy PNG and Download PNG draw the picture in the browser with modern-screenshot. The
-JSON is kept in localStorage. `pnpm build` writes a static site to `dist/`.
+JSON is kept in localStorage. `pnpm build` writes a static site to `dist/`, which `wrangler deploy` serves at
+https://discord-message-renderer.tsx.lt.
 
 ## Embed
 

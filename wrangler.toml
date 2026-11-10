@@ -1,0 +1,10 @@
+name = "discord-message-renderer"
+compatibility_date = "2026-11-10"
+workers_dev = false
+
+[[routes]]
+pattern = "discord-message-renderer.tsx.lt"
+custom_domain = true
+
+[assets]
+directory = "./dist"
