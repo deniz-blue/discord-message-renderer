@@ -1,0 +1,133 @@
+{
+	"context": {
+		"users": {
+			"3": "Organizer",
+			"8": "Moderator"
+		},
+		"channels": {
+			"2": "events",
+			"9": "Board games at Vingis"
+		},
+		"now": "2026-11-10T09:50:00+02:00",
+		"timeZone": "Europe/Vilnius",
+		"roles": {
+			"9000": {
+				"name": "Organizer",
+				"color": "#e67e22"
+			},
+			"9001": {
+				"name": "Moderator",
+				"color": "#3ba55c"
+			}
+		}
+	},
+	"messages": [
+		{
+			"id": "1",
+			"author": {
+				"username": "Organizer",
+				"id": "4194304000000000"
+			},
+			"member": {
+				"roles": [
+					"9000"
+				]
+			},
+			"timestamp": "2026-11-10T09:44:00+02:00",
+			"content": "Board games, Saturday 16:00 at the Vingis park café. Bring a game!"
+		},
+		{
+			"id": "2",
+			"author": {
+				"username": "ProtoCal",
+				"id": "4194304004194304",
+				"bot": true
+			},
+			"timestamp": "2026-11-10T09:44:05+02:00",
+			"message_reference": {
+				"message_id": "1"
+			},
+			"content": "-# **Event not created**: A moderator must use </event register:1> here to register it. Reviews are enabled for this forum but permissions were not set up correctly."
+		},
+		{
+			"id": "3",
+			"author": {
+				"username": "ProtoCal",
+				"id": "4194304004194304",
+				"bot": true
+			},
+			"timestamp": "2026-11-10T09:45:00+02:00",
+			"content": "<@3> wants to post this in <#2>\n\n## Board games at Vingis\n\n📆 **Date & Time:** <t:1795269600:f> – <t:1795284000:t> <t:1795269600:R>\n📍 **Location:** Vingis park café\n🪧 **Organized by** <@3>\n\nBring a game if you have one. Tea and snacks are on us.\n\n-# Last updated at <t:1794300000:R>",
+			"components": [
+				{
+					"type": 1,
+					"components": [
+						{
+							"type": 2,
+							"style": 1,
+							"label": "Approve",
+							"custom_id": "b0"
+						},
+						{
+							"type": 2,
+							"style": 2,
+							"label": "Edit",
+							"custom_id": "b1"
+						},
+						{
+							"type": 2,
+							"style": 2,
+							"label": "Reply",
+							"custom_id": "b2"
+						},
+						{
+							"type": 2,
+							"style": 4,
+							"label": "Deny",
+							"custom_id": "b3"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "4",
+			"author": {
+				"username": "Moderator",
+				"id": "4194304008388608"
+			},
+			"member": {
+				"roles": [
+					"9001"
+				]
+			},
+			"timestamp": "2026-11-10T09:47:00+02:00",
+			"content": "Looks good to me 👍 approving it now, ~~probably~~ **definitely** fine"
+		},
+		{
+			"id": "5",
+			"author": {
+				"username": "Moderator",
+				"id": "4194304008388608"
+			},
+			"member": {
+				"roles": [
+					"9001"
+				]
+			},
+			"timestamp": "2026-11-10T09:47:20+02:00",
+			"edited_timestamp": "2026-11-10T09:47:20+02:00",
+			"content": "> Tea and snacks are on us.\nnice touch 🫖"
+		},
+		{
+			"id": "6",
+			"author": {
+				"username": "ProtoCal",
+				"id": "4194304004194304",
+				"bot": true
+			},
+			"timestamp": "2026-11-10T09:48:00+02:00",
+			"content": "<@3> wants to post this in <#2>\n✅ Approved by <@8>: <#9>\n\n## Board games at Vingis\n\n📆 **Date & Time:** <t:1795269600:f> – <t:1795284000:t> <t:1795269600:R>\n📍 **Location:** Vingis park café\n🪧 **Organized by** <@3>\n\nBring a game if you have one. Tea and snacks are on us.\n\n-# Last updated at <t:1794300000:R>"
+		}
+	]
+}
