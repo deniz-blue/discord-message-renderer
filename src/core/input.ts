@@ -40,7 +40,9 @@ export type PollInput = Partial<Omit<APIPoll, "question" | "answers" | "results"
 	results?: { is_finalized?: boolean; answer_counts?: Partial<APIPollAnswerCount>[] };
 };
 
-type InputFields = "author" | "mentions" | "referenced_message" | "attachments" | "reactions" | "sticker_items" | "poll";
+export type InteractionInput = { name?: string; user?: UserInput; member?: MemberInput };
+
+type InputFields = "author" | "mentions" | "referenced_message" | "attachments" | "reactions" | "sticker_items" | "poll" | "interaction";
 
 export type MessageInput = Partial<Omit<APIMessage, InputFields>> & {
 	author?: UserInput;
@@ -51,6 +53,7 @@ export type MessageInput = Partial<Omit<APIMessage, InputFields>> & {
 	reactions?: ReactionInput[];
 	sticker_items?: StickerInput[];
 	poll?: PollInput;
+	interaction?: InteractionInput;
 };
 
 export type ResolvedEntities = {

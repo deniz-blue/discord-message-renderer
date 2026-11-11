@@ -44,3 +44,11 @@ test("reactions show their count and whether I reacted", () => {
 	ok(html.includes('<div class="reaction me">'));
 	ok(html.includes('<span class="reaction-count">2</span>'));
 });
+
+test("a command reply names who used it and an ephemeral one says only they can see it", () => {
+	const html = renderMessagesHtml({
+		messages: [{ flags: 64, interaction: { name: "event new", user: { id: "3", global_name: "Organizer" } } }],
+	}, {});
+	ok(html.includes('<span class="command-name">/event new</span>'));
+	ok(html.includes("<span>Only you can see this</span>"));
+});

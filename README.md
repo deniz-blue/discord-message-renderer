@@ -70,6 +70,8 @@ Discord message objects, as the API returns them:
 - `message_reference` + `referenced_message`, or a `message_id` of an earlier message: drawn as a reply. Forwards are
   ignored
 - `mentions`: these users, and their `member`, need no entry in `context`
+- `interaction`: `name`, `user`, `member`. Drawn above the message as "X used /name"
+- `flags`: 64 (ephemeral) adds "Only you can see this"
 - `content`: markdown, see below
 - `embeds`: `author` (`name`, `icon_url`), `title`, `url`, `description`, `fields` (`name`, `value`, `inline`),
   `image.url`, `thumbnail.url`, `footer` (`text`, `icon_url`), `timestamp`, `color`
