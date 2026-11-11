@@ -66,19 +66,41 @@ const downloadPng = async (): Promise<void> => {
 	Object.assign(document.createElement("a"), { href: url, download: "message.png" }).click();
 };
 
-const showCopied = (button: HTMLButtonElement): void => {
-	const label = button.textContent;
+const showCopying = (button: HTMLButtonElement): void => {
+	Object.assign(button, {
+		textContent: "Copying...",
+		disabled: true,
+		style: {
+			cursor: "not-allowed"
+		}
+	});
+};
+
+const showCopied = (button: HTMLButtonElement, previousLabel: string): void => {
 	button.textContent = "Copied";
-	setTimeout(() => (button.textContent = label), 1500);
+
+	setTimeout(() => Object.assign(button, {
+		textContent: previousLabel,
+		disabled: false,
+		style: {
+			cursor: "default"
+		}
+	}), 1000);
 };
 
 const copyPng = async (): Promise<void> => {
+	const previousLabel = copyButton.textContent;
+	showCopying(copyButton);
+
 	const blob = await domToBlob(messagesElement(), { scale: pngScale, type: "image/png" });
 	await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-	showCopied(copyButton);
+	showCopied(copyButton, previousLabel);
 };
 
 const copyEmbedCode = async (): Promise<void> => {
+	const previousLabel = embedButton.textContent;
+	showCopying(embedButton);
+
 	const parsed = parseEditor(editor.value);
 	if (parsed.input === undefined) return;
 	const { theme = "dark", platform = "desktop" } = selectedOptions();
@@ -86,7 +108,7 @@ const copyEmbedCode = async (): Promise<void> => {
 	const url = new URL(`embed.html?${new URLSearchParams({ theme, platform })}#${fragment}`, location.href).href;
 	const height = Math.ceil(messagesElement().getBoundingClientRect().height);
 	await navigator.clipboard.writeText(embedCodeOf(url, Number(widthSelect.value), height));
-	showCopied(embedButton);
+	showCopied(embedButton, previousLabel);
 };
 
 const loadExample = (path: string): void => {
