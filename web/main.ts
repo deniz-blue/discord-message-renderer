@@ -12,6 +12,7 @@ const examples = import.meta.glob<unknown>("../examples/*.json", { eager: true, 
 const widths = ["440", "600", "800"];
 const editorStorageKey = "discord-message-renderer:editor";
 const pngScale = 2;
+const firstVisitExample = "../examples/1-chat.json";
 
 const editor = elementById("editor", HTMLTextAreaElement);
 const status = elementById("status", HTMLParagraphElement);
@@ -26,7 +27,7 @@ const copyButton = elementById("copy", HTMLButtonElement);
 const downloadButton = elementById("download", HTMLButtonElement);
 
 const capitalized = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);
-const exampleNameOf = (path: string): string => path.replace(/^.*\//, "").replace(/\.json$/, "");
+const exampleNameOf = (path: string): string => path.replace(/^.*\/(\d+-)?/, "").replace(/\.json$/, "");
 
 const fillSelect = (select: HTMLSelectElement, values: readonly string[], labelOf: (value: string) => string): void =>
 	select.replaceChildren(...values.map((value) => new Option(labelOf(value), value)));
@@ -121,7 +122,7 @@ const reportFailure = (button: HTMLButtonElement, action: () => Promise<void>) =
 	action().catch((error: unknown) => (status.textContent = `${label} failed: ${errorMessageOf(error)}`));
 };
 
-const examplePaths = Object.keys(examples);
+const examplePaths = Object.keys(examples).sort();
 fillSelect(exampleSelect, examplePaths, exampleNameOf);
 fillSelect(themeSelect, themes, capitalized);
 fillSelect(platformSelect, platforms, capitalized);
@@ -140,7 +141,7 @@ copyButton.addEventListener("click", reportFailure(copyButton, copyPng));
 downloadButton.addEventListener("click", reportFailure(downloadButton, downloadPng));
 
 const savedEditor = localStorage.getItem(editorStorageKey);
-if (savedEditor === null) loadExample(examplePaths[0] ?? "");
+if (savedEditor === null) loadExample(firstVisitExample);
 else {
 	editor.value = savedEditor;
 	renderPreview();

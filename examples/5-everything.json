@@ -1,0 +1,230 @@
+{
+	"context": {
+		"users": {
+			"1000000000000000002": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" }
+		},
+		"members": {
+			"1000000000000000001": { "nick": "deniz 🌙", "roles": ["20"] }
+		},
+		"roles": {
+			"20": { "id": "20", "name": "Admins", "colors": { "primary_color": 11107839 }, "position": 3 },
+			"21": { "id": "21", "name": "Testers", "color": 15418783, "position": 2 }
+		},
+		"channels": {
+			"30": { "id": "30", "name": "general" }
+		},
+		"now": "2026-11-11T09:00:00+02:00",
+		"timeZone": "Europe/Vilnius",
+		"locale": "en-GB"
+	},
+	"messages": [
+		{
+			"id": "1",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-11T08:30:00+02:00",
+			"content": "# Heading\n## Smaller heading\n### Smallest heading\n**bold** *italic* _italic_ __underline__ ~~strike~~ ||spoiler|| `code`\n-# subtext\n> a quote\n- a list\n  - nested\n* another item\nhttps://deniz.blue <https://github.com/deniz-blue> [a named link](https://discord-message-renderer.tsx.lt)\n1. numbered\n2. second\n<@1000000000000000002> <@&21> <#30> @everyone @here </render:1>\n<t:1794672000:F>, <t:1794672000:R>\n🎨 <:fishcry:1030440120433790996> <a:RatVibe:800148287185223701>\n```ts\nconst answer: number = 42;\n```"
+		},
+		{
+			"id": "2",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-11T08:31:00+02:00",
+			"edited_timestamp": "2026-11-11T08:32:00+02:00",
+			"content": ">>> a block quote\nthat runs to the end",
+			"reactions": [
+				{ "emoji": { "id": null, "name": "🎨" }, "count": 3, "me": true },
+				{ "emoji": { "id": "1030274563709341766", "name": "SilHaha" }, "count": 1, "me": false }
+			]
+		},
+		{
+			"id": "3",
+			"author": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" },
+			"member": { "nick": "Pixel ✨", "roles": ["21"] },
+			"timestamp": "2026-11-11T08:33:00+02:00",
+			"message_reference": { "message_id": "1" },
+			"mentions": [{ "id": "1000000000000000003", "username": "toast", "global_name": "Toast" }],
+			"content": "<@1000000000000000003> photos from saturday",
+			"attachments": [
+				{ "id": "11", "filename": "table.png", "content_type": "image/png", "url": "https://cdn.discordapp.com/embed/avatars/0.png" },
+				{ "id": "12", "filename": "dice.png", "content_type": "image/png", "url": "https://cdn.discordapp.com/embed/avatars/1.png" },
+				{ "id": "13", "filename": "SPOILER_ending.png", "content_type": "image/png", "url": "https://cdn.discordapp.com/embed/avatars/4.png" },
+				{ "id": "14", "filename": "house-rules.pdf", "content_type": "application/pdf", "size": 1572864, "url": "https://example.com/house-rules.pdf" }
+			]
+		},
+		{
+			"id": "4",
+			"author": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" },
+			"member": { "nick": "Pixel ✨", "roles": ["21"] },
+			"timestamp": "2026-11-11T08:34:00+02:00",
+			"sticker_items": [
+				{ "id": "781291131828699156", "name": "Wave", "format_type": 2 },
+				{ "id": "749054660769218631", "name": "Hello", "format_type": 3 }
+			]
+		},
+		{
+			"id": "5",
+			"author": { "id": "1000000000000000010", "username": "Miso", "avatar": "https://cdn.discordapp.com/embed/avatars/5.png", "bot": true },
+			"interaction": { "name": "event show", "user": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" } },
+			"timestamp": "2026-11-11T08:40:00+02:00",
+			"embeds": [
+				{
+					"color": 5793266,
+					"author": { "name": "Weekly meet", "icon_url": "https://cdn.discordapp.com/embed/avatars/3.png" },
+					"title": "Board games",
+					"url": "https://example.com/board-games",
+					"description": "Bring a game if you have one. ||Tea is free.||",
+					"fields": [
+						{ "name": "When", "value": "<t:1794672000:f>", "inline": true },
+						{ "name": "Where", "value": "Vingis park café", "inline": true },
+						{ "name": "Going", "value": "12", "inline": true },
+						{ "name": "Notes", "value": "Use `/event join` to sign up." }
+					],
+					"image": { "url": "https://cdn.discordapp.com/embed/avatars/1.png" },
+					"thumbnail": { "url": "https://cdn.discordapp.com/embed/avatars/5.png" },
+					"footer": { "text": "Miso", "icon_url": "https://cdn.discordapp.com/embed/avatars/5.png" },
+					"timestamp": "2026-11-11T06:40:00.000Z"
+				}
+			],
+			"components": [
+				{
+					"type": 1,
+					"components": [
+						{ "type": 2, "style": 1, "label": "Primary", "custom_id": "primary" },
+						{ "type": 2, "style": 2, "label": "Secondary", "custom_id": "secondary" },
+						{ "type": 2, "style": 3, "label": "Success", "custom_id": "success", "emoji": { "name": "✅" } },
+						{ "type": 2, "style": 4, "label": "Danger", "custom_id": "danger" },
+						{ "type": 2, "style": 5, "label": "Link", "url": "https://example.com" }
+					]
+				},
+				{
+					"type": 1,
+					"components": [
+						{ "type": 2, "style": 2, "custom_id": "emoji-only", "emoji": { "id": "1030833622040707073", "name": "dogekek" } },
+						{ "type": 2, "style": 1, "label": "Disabled", "custom_id": "disabled", "disabled": true }
+					]
+				},
+				{
+					"type": 1,
+					"components": [
+						{
+							"type": 3,
+							"custom_id": "game",
+							"placeholder": "Pick a game",
+							"options": [
+								{ "label": "Wingspan", "value": "wingspan", "default": true },
+								{ "label": "Catan", "value": "catan" }
+							]
+						}
+					]
+				},
+				{ "type": 1, "components": [{ "type": 5, "custom_id": "who", "placeholder": "Invite someone" }] },
+				{ "type": 1, "components": [{ "type": 6, "custom_id": "role", "placeholder": "Pick a role" }] },
+				{ "type": 1, "components": [{ "type": 7, "custom_id": "anyone", "placeholder": "Pick a user or role" }] },
+				{ "type": 1, "components": [{ "type": 8, "custom_id": "where", "placeholder": "Pick a channel", "disabled": true }] }
+			]
+		},
+		{
+			"id": "6",
+			"author": { "id": "1000000000000000010", "username": "Miso", "avatar": "https://cdn.discordapp.com/embed/avatars/5.png", "bot": true },
+			"interaction": { "name": "event join", "user": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel" }, "member": { "nick": "Pixel ✨", "roles": ["21"] } },
+			"timestamp": "2026-11-11T08:41:00+02:00",
+			"flags": 64,
+			"content": "You're going to **Board games**."
+		},
+		{
+			"id": "7",
+			"webhook_id": "684259561846079524",
+			"author": { "id": "684259561846079524", "username": "ProtoCal", "avatar": "6a090d3694c90db98fd8fb805778daff" },
+			"timestamp": "2026-11-11T08:45:00+02:00",
+			"content": "New event: **Board games** <t:1794672000:R>"
+		},
+		{
+			"id": "8",
+			"author": { "id": "1000000000000000010", "username": "Miso", "avatar": "https://cdn.discordapp.com/embed/avatars/5.png", "bot": true },
+			"timestamp": "2026-11-11T08:50:00+02:00",
+			"flags": 32768,
+			"components": [
+				{
+					"type": 17,
+					"accent_color": 15418783,
+					"components": [
+						{ "type": 10, "content": "# Release notes\nEvery Components V2 part, in one container." },
+						{ "type": 14, "divider": true, "spacing": 1 },
+						{
+							"type": 9,
+							"components": [
+								{ "type": 10, "content": "**A section with a thumbnail**" },
+								{ "type": 10, "content": "-# up to three text displays" }
+							],
+							"accessory": { "type": 11, "media": { "url": "https://cdn.discordapp.com/embed/avatars/3.png" }, "description": "a thumbnail" }
+						},
+						{
+							"type": 9,
+							"components": [{ "type": 10, "content": "A section with a button" }],
+							"accessory": { "type": 2, "style": 5, "label": "Source", "url": "https://github.com/deniz-blue/discord-message-renderer" }
+						},
+						{
+							"type": 12,
+							"items": [
+								{ "media": { "url": "https://cdn.discordapp.com/embed/avatars/0.png" } },
+								{ "media": { "url": "https://cdn.discordapp.com/embed/avatars/1.png" }, "description": "a caption" },
+								{ "media": { "url": "https://cdn.discordapp.com/embed/avatars/2.png" }, "spoiler": true }
+							]
+						},
+						{ "type": 13, "file": { "url": "attachment://notes.txt" } },
+						{ "type": 14, "divider": false, "spacing": 2 },
+						{
+							"type": 1,
+							"components": [{ "type": 2, "style": 3, "label": "Ship it", "custom_id": "ship", "emoji": { "name": "🚀" } }]
+						}
+					]
+				},
+				{ "type": 10, "content": "-# a text display outside the container" }
+			]
+		},
+		{
+			"id": "9",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-11T08:52:00+02:00",
+			"poll": {
+				"question": { "text": "Which game first?" },
+				"answers": [
+					{ "answer_id": 1, "poll_media": { "text": "Wingspan", "emoji": { "id": null, "name": "🐦" } } },
+					{ "answer_id": 2, "poll_media": { "text": "Catan", "emoji": { "id": null, "name": "🐑" } } }
+				],
+				"expiry": "2026-11-12T08:52:00+02:00",
+				"allow_multiselect": true
+			}
+		},
+		{
+			"id": "10",
+			"author": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" },
+			"timestamp": "2026-11-11T08:55:00+02:00",
+			"poll": {
+				"question": { "text": "Saturday or Sunday?" },
+				"answers": [
+					{ "answer_id": 1, "poll_media": { "text": "Saturday" } },
+					{ "answer_id": 2, "poll_media": { "text": "Sunday" } }
+				],
+				"expiry": "2026-11-10T18:00:00+02:00",
+				"allow_multiselect": false,
+				"results": {
+					"is_finalized": true,
+					"answer_counts": [
+						{ "id": 1, "count": 5, "me_voted": false },
+						{ "id": 2, "count": 2, "me_voted": true }
+					]
+				}
+			}
+		},
+		{
+			"id": "11",
+			"timestamp": "2026-11-11T08:58:00+02:00",
+			"message_reference": { "message_id": "0" },
+			"referenced_message": {
+				"author": { "id": "1000000000000000003", "username": "toast", "global_name": "Toast" },
+				"content": "a message from before this list"
+			},
+			"content": "no author, so this one is from an app called Bot"
+		}
+	]
+}

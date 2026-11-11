@@ -1,0 +1,28 @@
+{
+	"context": {
+		"now": "2026-11-11T09:00:00+02:00",
+		"timeZone": "Europe/Vilnius"
+	},
+	"messages": [
+		{
+			"id": "1",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-11T08:40:00+02:00",
+			"content": "anyone up for board games on saturday?"
+		},
+		{
+			"id": "2",
+			"author": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" },
+			"timestamp": "2026-11-11T08:41:00+02:00",
+			"content": "i can bring **Wingspan** 🐦"
+		},
+		{
+			"id": "3",
+			"author": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" },
+			"timestamp": "2026-11-11T08:50:00+02:00",
+			"message_reference": { "message_id": "2" },
+			"content": "yes!! i'll bring snacks",
+			"reactions": [{ "emoji": { "id": null, "name": "🎉" }, "count": 2, "me": true }]
+		}
+	]
+}

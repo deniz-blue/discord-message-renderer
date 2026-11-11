@@ -1,0 +1,25 @@
+{
+	"context": {
+		"now": "2026-11-11T09:00:00+02:00",
+		"timeZone": "Europe/Vilnius"
+	},
+	"messages": [
+		{
+			"author": { "id": "1000000000000000010", "username": "Miso", "avatar": "https://cdn.discordapp.com/embed/avatars/5.png", "bot": true },
+			"timestamp": "2026-11-11T08:55:00+02:00",
+			"embeds": [
+				{
+					"color": 5793266,
+					"title": "Board games",
+					"url": "https://example.com/board-games",
+					"description": "Bring a game if you have one.",
+					"fields": [
+						{ "name": "When", "value": "<t:1794672000:f>", "inline": true },
+						{ "name": "Where", "value": "Vingis park café", "inline": true }
+					],
+					"footer": { "text": "Reply to sign up" }
+				}
+			]
+		}
+	]
+}
