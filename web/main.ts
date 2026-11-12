@@ -1,4 +1,4 @@
-import { domToBlob, domToPng } from "modern-screenshot";
+import { domToBlob, domToPng, domToJpeg, domToWebp } from "modern-screenshot";
 import { errorMessageOf } from "../src/core/errors.ts";
 import { type RenderInput, renderInputOf } from "../src/core/input.ts";
 import { type RenderOptions, platforms, renderOptionsOf, themes } from "../src/core/options.ts";
@@ -10,8 +10,9 @@ import { showMessages } from "./show-messages.ts";
 
 const examples = import.meta.glob<unknown>("../examples/*.json", { eager: true, import: "default" });
 const widths = ["440", "600", "800"];
+const formats = ["png", "jpeg", "webp"];
 const editorStorageKey = "discord-message-renderer:editor";
-const pngScale = 2;
+const imageScale = 2;
 const firstVisitExample = "../examples/1-chat.json";
 
 const editor = elementById("editor", HTMLTextAreaElement);
@@ -24,9 +25,10 @@ const platformSelect = elementById("platform", HTMLSelectElement);
 const widthSelect = elementById("width", HTMLSelectElement);
 const embedButton = elementById("embed", HTMLButtonElement);
 const copyButton = elementById("copy", HTMLButtonElement);
-const downloadButton = elementById("download", HTMLButtonElement);
+const downloadSelect = elementById("download", HTMLSelectElement);
 
-const capitalized = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);
+const capitalized = (word: string): string => word.toUpperCase();
+const titleCase = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);
 const exampleNameOf = (path: string): string => path.replace(/^.*\/(\d+-)?/, "").replace(/\.json$/, "");
 
 const fillSelect = (select: HTMLSelectElement, values: readonly string[], labelOf: (value: string) => string): void =>
@@ -50,7 +52,7 @@ const renderPreview = (): void => {
 	localStorage.setItem(editorStorageKey, editor.value);
 	const parsed = parseEditor(editor.value);
 	status.textContent = parsed.error ?? "";
-	embedButton.disabled = copyButton.disabled = downloadButton.disabled = parsed.input === undefined;
+	embedButton.disabled = copyButton.disabled = downloadSelect.disabled = parsed.input === undefined;
 	if (parsed.input === undefined) return;
 	preview.style.width = `${widthSelect.value}px`;
 	showMessages(preview, fontLink, parsed.input, selectedOptions());
@@ -62,9 +64,25 @@ const messagesElement = (): HTMLElement => {
 	return element;
 };
 
-const downloadPng = async (): Promise<void> => {
-	const url = await domToPng(messagesElement(), { scale: pngScale });
-	Object.assign(document.createElement("a"), { href: url, download: "message.png" }).click();
+const downloadImage = async (format: string): Promise<void> => {
+	const element = messagesElement();
+	const options = { scale: imageScale };
+	let url;
+
+	switch (format) {
+		case "png":
+			url = await domToPng(element, options);
+			break;
+
+		case "jpeg":
+			url = await domToJpeg(element, options);
+			break;
+
+		case "webp":
+			url = await domToWebp(element, options);
+	}
+
+	Object.assign(document.createElement("a"), { href: url, download: `message.${format}` }).click();
 };
 
 const showCopying = (button: HTMLButtonElement): void => {
@@ -93,7 +111,7 @@ const copyPng = async (): Promise<void> => {
 	const previousLabel = copyButton.textContent;
 	showCopying(copyButton);
 
-	const blob = await domToBlob(messagesElement(), { scale: pngScale, type: "image/png" });
+	const blob = await domToBlob(messagesElement(), { scale: imageScale, type: "image/png" });
 	await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
 	showCopied(copyButton, previousLabel);
 };
@@ -117,15 +135,14 @@ const loadExample = (path: string): void => {
 	renderPreview();
 };
 
-const reportFailure = (button: HTMLButtonElement, action: () => Promise<void>) => (): void => {
-	const label = button.textContent;
-	action().catch((error: unknown) => (status.textContent = `${label} failed: ${errorMessageOf(error)}`));
+const reportFailure = (name: string, action: () => Promise<void>) => {
+	action().catch((error: unknown) => (status.textContent = `${name} failed: ${errorMessageOf(error)}`));
 };
 
 const examplePaths = Object.keys(examples).sort();
 fillSelect(exampleSelect, examplePaths, exampleNameOf);
-fillSelect(themeSelect, themes, capitalized);
-fillSelect(platformSelect, platforms, capitalized);
+fillSelect(themeSelect, themes, titleCase);
+fillSelect(platformSelect, platforms, titleCase);
 fillSelect(widthSelect, widths, (width) => `${width} px`);
 widthSelect.value = "600";
 
@@ -135,10 +152,20 @@ exampleSelect.addEventListener("change", () => {
 	loadExample(exampleSelect.value);
 	exampleSelect.value = "";
 });
+
+fillSelect(downloadSelect, formats, capitalized);
+downloadSelect.prepend(new Option("Download image", "", true, true));
+downloadSelect.options[0]?.setAttribute("disabled", "");
+downloadSelect.addEventListener("change", () => {
+	const selected = downloadSelect.value.toLowerCase();
+	downloadSelect.value = "";
+
+	reportFailure("Download image", () => downloadImage(selected));
+});
+
 for (const control of [editor, themeSelect, platformSelect, widthSelect]) control.addEventListener("input", renderPreview);
-embedButton.addEventListener("click", reportFailure(embedButton, copyEmbedCode));
-copyButton.addEventListener("click", reportFailure(copyButton, copyPng));
-downloadButton.addEventListener("click", reportFailure(downloadButton, downloadPng));
+embedButton.addEventListener("click", () => reportFailure("Copy embed code", copyEmbedCode));
+copyButton.addEventListener("click", () => reportFailure("Copy PNG", copyPng));
 
 const savedEditor = localStorage.getItem(editorStorageKey);
 if (savedEditor === null) loadExample(firstVisitExample);

@@ -4,10 +4,10 @@ import { type RenderOptions, fontOf, platforms, renderOptionsOf, themes } from "
 import { errorMessageOf } from "./core/errors.ts";
 import { renderMessagesHtml } from "./core/render.ts";
 import { messagesDocument, readRenderInput } from "./io/files.ts";
-import { writeMessagesPng } from "./io/png.ts";
+import { type ImageFormats, writeMessagesImage } from "./io/image.ts";
 
-const usage = `usage: discord-message-renderer <messages.json> [-o out.png] [--html out.html] [--width 600] [--scale 2]
-       [--theme ${themes.join("|")}] [--platform ${platforms.join("|")}] [--font "Google font"] [--fonts dir]`;
+const usage = `usage: discord-message-renderer <messages.json> [-o out.png|out.jpeg|out.webp] [--html out.html] [--width 600] [--scale 2]
+			 [--theme ${themes.join("|")}] [--platform ${platforms.join("|")}] [--font "Google font"] [--fonts dir]`;
 
 const { values, positionals } = parseArgs({
 	allowPositionals: true,
@@ -49,11 +49,18 @@ if (values.html !== undefined) {
 }
 if (values.out !== undefined || values.html === undefined) {
 	const out = values.out ?? `${inputPath.replace(/\.json$/, "")}.png`;
-	await writeMessagesPng(messagesHtml, {
+	let format = out.match(/\.(png|jpe?g|webp)$/)?.[1];
+
+	if (format === 'jpg') {
+		format = 'jpeg';
+	}
+
+	await writeMessagesImage(messagesHtml, {
 		width: Number(values.width),
 		scale: Number(values.scale),
 		path: out,
 		font: fontOf(options),
+		format: format as ImageFormats,
 		...(values.fonts === undefined ? {} : { fontDirectory: values.fonts }),
 	});
 	console.log(out);

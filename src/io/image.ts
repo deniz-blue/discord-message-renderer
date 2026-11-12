@@ -4,7 +4,8 @@ import { render } from "takumi-js";
 import { fontStylesheetUrl } from "../core/options.ts";
 import { readStylesheet } from "./files.ts";
 
-export type PngOptions = { width: number; scale: number; path: string; font: string; fontDirectory?: string };
+export type ImageFormats = "png" | "jpeg" | "webp";
+export type ImageOptions = { width: number; scale: number; path: string; font: string; format: ImageFormats, fontDirectory?: string };
 
 const fontFilePattern = /\.(ttf|otf|woff2?)$/i;
 
@@ -20,18 +21,19 @@ const fetchText = async (url: string): Promise<string> => {
 	return response.text();
 };
 
-export const writeMessagesPng = async (messagesHtml: string, options: PngOptions): Promise<void> => {
+export const writeMessagesImage = async (messagesHtml: string, options: ImageOptions): Promise<void> => {
 	const [fontFaces, stylesheet, fonts] = await Promise.all([
 		fetchText(fontStylesheetUrl(options.font)),
 		readStylesheet(),
 		readFontFiles(options.fontDirectory),
 	]);
-	const png = await render(messagesHtml, {
+	const image = await render(messagesHtml, {
 		width: options.width * options.scale,
 		devicePixelRatio: options.scale,
 		css: [fontFaces, stylesheet],
 		fonts,
+    format: options.format as any, // Set to any in order to reduce repetitive code because takumi-js uses discriminated unions.
 		images: { throwOnError: false },
 	});
-	await writeFile(options.path, png);
+	await writeFile(options.path, image);
 };
