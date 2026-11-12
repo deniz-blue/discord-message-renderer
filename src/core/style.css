@@ -12,6 +12,11 @@
 .message { position: relative; padding: 2px 48px 2px 72px; margin-top: 17px; }
 .message:first-child { margin-top: 0; }
 .message.grouped { margin-top: 0; }
+.message.mentioned { background: var(--message-mentioned-background); }
+.message.mentioned::before { background: var(--message-mentioned-bar); }
+.message.ephemeral { background: var(--message-ephemeral-background); }
+.message.ephemeral::before { background: var(--background-brand); }
+.message.mentioned::before, .message.ephemeral::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 2px; }
 .avatar { position: absolute; left: 16px; margin-top: 2px; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
 .message-header { line-height: 1.375rem; min-height: 1.375rem; color: var(--text-muted); white-space: normal; }
 .author-name { color: var(--text-strong); font-weight: 500; }
@@ -36,7 +41,7 @@
 .reply .author-name { opacity: 0.64; }
 .reply .app-tag { margin-top: 0; }
 .reply-text { overflow: hidden; text-overflow: ellipsis; margin-left: 2px; }
-.command-name { color: var(--text-link); font-weight: 500; }
+.command-name { padding: 0 2px; border-radius: 3px; background: var(--mention-background); color: var(--text-link); font-weight: 500; }
 .ephemeral-note { display: flex; align-items: center; margin-top: 4px; color: var(--text-muted); font-size: 12px; line-height: 16px; }
 .ephemeral-icon { width: 16px; height: 16px; margin-right: 4px; }
 

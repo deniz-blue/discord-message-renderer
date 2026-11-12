@@ -68,6 +68,28 @@ const ephemeralNote = html`<div class="ephemeral-note">${eyeIcon}<span>Only you 
 
 const isEphemeral = (message: MessageInput): boolean => ((message.flags ?? 0) & MessageFlags.Ephemeral) !== 0;
 
+const mentionsViewer = (message: MessageInput, viewer: string, viewerRoles: readonly string[]): boolean => {
+	const content = message.content ?? "";
+	return (
+		message.mention_everyone === true ||
+		(message.mentions ?? []).some((user) => user.id === viewer) ||
+		content.includes(`<@${viewer}>`) ||
+		content.includes(`<@!${viewer}>`) ||
+		viewerRoles.some((role) => message.mention_roles?.includes(role) === true || content.includes(`<@&${role}>`))
+	);
+};
+
+const highlightOf = (message: MessageInput, settings: RenderSettings): "ephemeral" | "mentioned" | undefined => {
+	if (isEphemeral(message)) return "ephemeral";
+	const { viewer } = settings;
+	if (viewer === undefined) return undefined;
+	const viewerRoles = settings.resolved.members?.[viewer]?.roles ?? [];
+	return mentionsViewer(message, viewer, viewerRoles) ? "mentioned" : undefined;
+};
+
+const messageClassOf = (message: MessageInput, settings: RenderSettings, grouped: boolean): string =>
+	["message", grouped && "grouped", highlightOf(message, settings)].filter(Boolean).join(" ");
+
 const listToHtml = <T>(items: readonly T[] | undefined, toHtml: (items: readonly T[]) => Html): Html | false =>
 	items === undefined || items.length === 0 ? false : toHtml(items);
 
@@ -80,10 +102,10 @@ const bodyToHtml = (message: MessageInput, settings: RenderSettings): Html => {
 
 export const messageToHtml = (message: MessageInput, neighbours: MessageNeighbours, settings: RenderSettings): Html => {
 	if (continuesPrevious(message, neighbours, settings)) {
-		return html`<div class="message grouped">${bodyToHtml(message, settings)}</div>`;
+		return html`<div class="${messageClassOf(message, settings, true)}">${bodyToHtml(message, settings)}</div>`;
 	}
 	const author = authorOf(message, settings.resolved);
-	return html`<div class="message">
+	return html`<div class="${messageClassOf(message, settings, false)}">
 		${headerLineToHtml(message, neighbours.replied, settings)}
 		<img class="avatar" src="${author.avatarUrl}" alt="">
 		<div class="message-header">${nameToHtml(author)}<span class="message-time">${formatMessageHeaderTime(timeOf(message, settings), settings)}</span></div>

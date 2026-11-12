@@ -67,6 +67,7 @@ export type RenderContext = ResolvedEntities & {
 	now?: string;
 	timeZone?: string;
 	locale?: string;
+	viewer?: string;
 };
 
 export type RenderInput = {
@@ -74,7 +75,7 @@ export type RenderInput = {
 	messages: MessageInput[];
 };
 
-export type RenderSettings = Clock & { resolved: ResolvedEntities; platform: Platform };
+export type RenderSettings = Clock & { resolved: ResolvedEntities; platform: Platform; viewer: string | undefined };
 
 const usersIn = (messages: readonly MessageInput[]): Record<string, UserInput> =>
 	Object.fromEntries(
@@ -94,7 +95,7 @@ const membersIn = (messages: readonly MessageInput[]): Record<string, MemberInpu
 	);
 
 export const settingsOf = (input: RenderInput, platform: Platform): RenderSettings => {
-	const { now, timeZone, locale, ...resolved } = input.context ?? {};
+	const { now, timeZone, locale, viewer, ...resolved } = input.context ?? {};
 	return {
 		resolved: {
 			...resolved,
@@ -102,6 +103,7 @@ export const settingsOf = (input: RenderInput, platform: Platform): RenderSettin
 			members: { ...membersIn(input.messages), ...resolved.members },
 		},
 		platform,
+		viewer,
 		locale: locale ?? "en-US",
 		timeZone: timeZone ?? "UTC",
 		now: now === undefined ? new Date() : new Date(now),

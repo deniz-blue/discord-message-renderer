@@ -1,0 +1,32 @@
+{
+	"context": {
+		"now": "2026-11-11T09:00:00+02:00",
+		"timeZone": "Europe/Vilnius",
+		"viewer": "1000000000000000001",
+		"channels": { "1000000000000000100": { "id": "1000000000000000100", "name": "generally" } }
+	},
+	"messages": [
+		{
+			"id": "1",
+			"author": { "id": "1000000000000000002", "username": "pixel", "global_name": "Pixel", "avatar": "https://cdn.discordapp.com/embed/avatars/2.png" },
+			"timestamp": "2026-11-11T08:50:00+02:00",
+			"content": "anyone up for board games on saturday?"
+		},
+		{
+			"id": "2",
+			"author": { "id": "1000000000000000003", "username": "riley", "global_name": "Riley", "avatar": "https://cdn.discordapp.com/embed/avatars/3.png" },
+			"timestamp": "2026-11-11T08:55:00+02:00",
+			"message_reference": { "message_id": "1" },
+			"content": "<@1000000000000000001> you bringing Wingspan? moving the thread to <#1000000000000000100>",
+			"mentions": [{ "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" }]
+		},
+		{
+			"id": "3",
+			"author": { "id": "1000000000000000010", "username": "Miso", "avatar": "https://cdn.discordapp.com/embed/avatars/5.png", "bot": true },
+			"interaction": { "name": "autoslowmode list", "user": { "id": "1000000000000000001", "username": "deniz", "global_name": "deniz" } },
+			"timestamp": "2026-11-11T08:58:00+02:00",
+			"flags": 64,
+			"content": "<@1000000000000000001>, slowmode is on in every channel except <#1000000000000000100>."
+		}
+	]
+}

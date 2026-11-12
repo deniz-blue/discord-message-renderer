@@ -40,6 +40,7 @@ frame.contentWindow.postMessage({
 		"channels": { "2": { "id": "2", "name": "events" } },
 		"now": "2026-11-10T09:50:00+02:00",
 		"timeZone": "Europe/Vilnius",
+		"viewer": "3",
 		"locale": "en-US"
 	},
 	"messages": [
@@ -71,7 +72,7 @@ Discord message objects, as the API returns them:
   ignored
 - `mentions`: these users, and their `member`, need no entry in `context`
 - `interaction`: `name`, `user`, `member`. Drawn above the message as "X used /name"
-- `flags`: 64 (ephemeral) adds "Only you can see this"
+- `flags`: 64 (ephemeral) adds "Only you can see this", and a blurple bar and faint tint across the message
 - `content`: markdown, see below
 - `embeds`: `author` (`name`, `icon_url`), `title`, `url`, `description`, `fields` (`name`, `value`, `inline`),
   `image.url`, `thumbnail.url`, `footer` (`text`, `icon_url`), `timestamp`, `color`
@@ -100,6 +101,8 @@ Partial API objects keyed by id, as in an interaction's `resolved`:
 - `channels`: `name`
 - `now`: ISO time for "Today at" and relative timestamps. Defaults to the current time
 - `timeZone`: IANA name, defaults to `UTC`
+- `viewer`: the user id of the person reading. A message that mentions them (`mentions`, `<@id>`, `@everyone`, or a role
+  they have in `context.members`) gets a gold bar and a faint tint. Without it, no message gets that look
 - `locale`: defaults to `en-US`
 
 A user mention shows the member's `nick`, then the user's name, then its id.
