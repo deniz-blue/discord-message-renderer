@@ -1,12 +1,12 @@
 # discord-message-renderer
 
-Renders Discord messages from API JSON as a PNG, JPEG, WebP, HTML or an embed: https://discord-message-renderer.tsx.lt
+Renders Discord messages from API JSON as a PNG, JPEG, WebP, GIF, HTML or an embed: https://discord-message-renderer.tsx.lt
 
 ## CLI
 
 ```sh
-node src/cli.ts input.json -o out.png|out.jpeg|out.webp [--html out.html] [--width 600] [--scale 2]
-    [--theme dark|ash|onyx|light] [--platform desktop|mobile] [--font "Google font"] [--fonts dir]
+node src/cli.ts input.json -o out.png|out.jpeg|out.webp|out.gif [--html out.html] [--width 600] [--scale 2]
+    [--theme dark|ash|onyx|light] [--platform desktop|mobile] [--font "Google font"] [--fonts dir] [--fps 30] [--duration 10000]
 ```
 
 - Needs Node 26
